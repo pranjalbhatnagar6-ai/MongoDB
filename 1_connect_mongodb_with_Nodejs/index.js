@@ -2,20 +2,21 @@ import express from 'express'
 import { MongoClient } from 'mongodb';
 
 const app = express();
-
 const dbname = "school"
 const url = "mongodb://localhost:27017"
 
 const client = new MongoClient(url) //making client
 
-async function dbConnection(){
-    await client.connect() //connecting client
-    const db = client.db(dbname); //get db via client
-    const collection = db.collection('students')
-    const result = await collection.find().toArray()
-    console.log(result);
-}
+// 2_Display data on UI
+// app.set('view engine','ejs')
+// app.get("/",async (req,resp)=>{
+//     await client.connect() //connecting client
+//     const db = client.db(dbname); //get db via client
+//     const collection = db.collection('students')
+//     const students = await collection.find().toArray()
+//     console.log(students);
+//     resp.render('students',{students})
+// })
 
-dbConnection()
 
 app.listen(3200)
