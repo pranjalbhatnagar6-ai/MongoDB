@@ -2,6 +2,8 @@ import express from 'express'
 import { MongoClient } from 'mongodb';
 
 const app = express();
+// 4_Middleware to Save Data of form in Mongodb
+app.use(express.urlencoded({extended:true}))
 const dbname = "school"
 const url = "mongodb://localhost:27017"
 
@@ -18,7 +20,7 @@ app.set('view engine','ejs')
 //     resp.render('students',{students})
 // })
 
-// Make API
+// 3_Make API
 client.connect().then((connection)=>{
     const db = connection.db(dbname);
 
@@ -29,12 +31,27 @@ client.connect().then((connection)=>{
         resp.render('students',{students})
     })
 
+    // get data through EJS file
     app.get("/ui",async (req,resp)=>{
         const collection = db.collection('students')
         const students = await collection.find().toArray()
         // resp.send(students);
         resp.render('students',{students})
     })
+
+    // 4_Save Data with form in Mongodb
+    app.get("/add",(req,resp)=>{
+        resp.render('add-student')
+    })
+        // POST METHOD AND ROUTE
+        app.post("/add-student",async (req,resp)=>{
+        const collection = db.collection('students')
+        const result = await collection.insertOne(req.body)
+        console.log(result)
+        resp.send("Data Saved");
+    })
+
+    
 })
 
 app.listen(3200)
